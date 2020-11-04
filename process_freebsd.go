@@ -15,6 +15,7 @@ const (
 	KERN_PROC          = 14 // struct: process entries
 	KERN_PROC_PID      = 1  // by process id
 	KERN_PROC_PROC     = 8  // only return procs
+	KERN_PROC_ARGS     = 7  // get/set arguments/proctitle
 	KERN_PROC_PATHNAME = 12 // path to executable
 )
 
@@ -110,7 +111,8 @@ type UnixProcess struct {
 	pgrp  int
 	sid   int
 
-	binary string
+	binary  string
+	cmdline string
 }
 
 func (p *UnixProcess) Pid() int {
@@ -123,6 +125,10 @@ func (p *UnixProcess) PPid() int {
 
 func (p *UnixProcess) Executable() string {
 	return p.binary
+}
+
+func (p *UnixProcess) CommandLine() string {
+   return p.cmdline
 }
 
 // Refresh reloads all the data associated with this process.
@@ -172,6 +178,30 @@ func findProcess(pid int) (Process, error) {
 	return newUnixProcess(pid)
 }
 
+func getCommandLine(pid int) string {
+	var cmdline string
+	var byt []byte
+
+	mib := []int32{CTL_KERN, KERN_PROC, KERN_PROC_ARGS, int32(pid)}
+
+	buf, len, err := call_syscall(mib)
+	if err != nil {
+		return cmdline
+	}
+
+	// parse buf to command line by replacing \0 with space
+	for i := uint64(0); i < len; i++ {
+		if buf[i] != 0 {
+			byt = append(byt, buf[i])
+		} else {
+			byt = append(byt, ' ')
+		}
+	}
+	cmdline = string(byt)
+
+	return cmdline
+}
+
 func processes() ([]Process, error) {
 	results := make([]Process, 0, 50)
 
@@ -198,6 +228,8 @@ func processes() ([]Process, error) {
 			continue
 		}
 		p.ppid, p.pgrp, p.sid, p.binary = copy_params(&k)
+
+		p.cmdline = getCommandLine(p.pid)
 
 		results = append(results, p)
 	}

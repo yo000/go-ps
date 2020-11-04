@@ -151,6 +151,8 @@ func (p *UnixProcess) Refresh() error {
 	}
 
 	p.ppid, p.pgrp, p.sid, p.binary = copy_params(&k)
+	p.cmdline = getCommandLine(p.pid)
+
 	return nil
 }
 

@@ -31,5 +31,4 @@ $ go get github.com/mitchellh/go-ps
 Want to contribute? Here is a short TODO list of things that aren't
 implemented for this library that would be nice:
 
-  * FreeBSD support
   * Plan9 support

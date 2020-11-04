@@ -12,6 +12,7 @@ How it works:
 
   * **Darwin** uses the `sysctl` syscall to retrieve the process table.
   * **Unix** uses the procfs at `/proc` to inspect the process tree.
+  * **FreeBSD** don't use procfs as deprecated, but use syscall.
   * **Windows** uses the Windows API, and methods such as
     `CreateToolhelp32Snapshot` to get a point-in-time snapshot of
     the process table.

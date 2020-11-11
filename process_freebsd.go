@@ -128,7 +128,7 @@ func (p *UnixProcess) Executable() string {
 }
 
 func (p *UnixProcess) CommandLine() string {
-   return p.cmdline
+	return p.cmdline
 }
 
 // Refresh reloads all the data associated with this process.
@@ -151,6 +151,8 @@ func (p *UnixProcess) Refresh() error {
 	}
 
 	p.ppid, p.pgrp, p.sid, p.binary = copy_params(&k)
+	p.cmdline = getCommandLine(p.pid)
+
 	return nil
 }
 

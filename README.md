@@ -8,11 +8,13 @@ If you're new to Go, this library has a good amount of advanced Go educational
 value as well. It uses some advanced features of Go: build tags, accessing
 DLL methods for Windows, cgo for Darwin, etc.
 
+This fork add arguments in the form of CommandLine() method.
+
 How it works:
 
   * **Darwin** uses the `sysctl` syscall to retrieve the process table.
   * **Unix** uses the procfs at `/proc` to inspect the process tree.
-  * **FreeBSD** don't use procfs as deprecated, but use syscall.
+  * **FreeBSD** don't use procfs as deprecated, but use syscalls.
   * **Windows** uses the Windows API, and methods such as
     `CreateToolhelp32Snapshot` to get a point-in-time snapshot of
     the process table.
@@ -22,7 +24,7 @@ How it works:
 Install using standard `go get`:
 
 ```
-$ go get github.com/mitchellh/go-ps
+$ go get github.com/yo000/go-ps
 ...
 ```
 

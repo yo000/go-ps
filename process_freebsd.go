@@ -199,7 +199,8 @@ func getCommandLine(pid int) string {
 			byt = append(byt, ' ')
 		}
 	}
-	cmdline = string(byt)
+	// Remove the last space
+	cmdline = string(byt[:len-1])
 
 	return cmdline
 }
